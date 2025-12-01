@@ -23,7 +23,6 @@ public class Trabalho_arvore {
         ArvorePessoas arvore = new ArvorePessoas();
         boolean rodando = true; // Usado para continuar ou parar o código.
         int opcao; // Opção do usuário.
-        
         // Iniciando o DataInputStream. Usado para fazer perguntas.
         DataInputStream dado;
         dado = new DataInputStream(System.in);
@@ -84,10 +83,31 @@ public class Trabalho_arvore {
                     System.out.println("REMOCAO EXECUTADA");
                 }
                 
-                case 3 -> {
-                    String cpfBusca = PegaCpf("Digite um cpf para ser buscado: ");
-                    NoPessoa encontrado = arvore.buscar(cpfBusca);
-                    System.out.println(encontrado);
+                case 3 -> { // Buscas.
+                    int opcaoBusca; // Opção do usuário para buscas.
+                    boolean buscando = true; // Usado para continuar ou parar o código.
+                    
+                    while(buscando) {
+                        System.out.println("ESCOLHA UM TIPO DE BUSCA");
+                        Linha();
+                        opcaoBusca = PegaNum("1 - Busca simples por CPF\n2 - Mostrar caminho da Raiz ate um NO\n3 - Mostrar caminho entre dois Nos\n4 - Encontrar ancestral comum\n5 - Voltar", 1, 5, "Digite uma opcao valida.");
+                        switch (opcaoBusca) {
+                            case 1 -> { // Busca simples.
+                                String cpfBusca = PegaCpf("Digite um cpf para ser buscado: ");
+                                NoPessoa encontrado = arvore.buscarSimples(cpfBusca);
+                                Linha();
+                                if (encontrado != null) {
+                                    System.out.println("Pessoa encontrada: " + encontrado);
+                                } else {
+                                    System.out.println("Pessoa com CPF " + cpfBusca + " nao encontrada.");
+                                }
+                            }
+
+                            case 2 -> { // Caminho raiz até nó.
+                                
+                            }
+                        }
+                    }
                 }
                 
                 // Pronto.
@@ -335,53 +355,44 @@ public class Trabalho_arvore {
         }
         
         
+        // Pronto.
+        // Visualizar arvore binaria completa.
         public void visualizarArvore() {
             System.out.println("VISUALIZACAO COMPLETA DA ARVORE");
             Linha();
-            
+           
+            // Chama a função para visualizar a arvore completa, começando pela raiz e nivel 0.
             visualizarRecursivo(this.raiz, 0);
             Linha();
         }
         
         
+        // Pronto.
         private void visualizarRecursivo(NoPessoa noAtual, int nivel) {
+            // Se não tiver nada na arvore, retorna null.
             if (noAtual == null) {
                 return;
             }
             
+            // Começa escrevendo de cima (direita).
             visualizarRecursivo(noAtual.direita, nivel + 1);
             
+            // Cria a indentação para adicionar espaços antes do no.
+            // Simulando os níveis/profundidade.
             StringBuilder indentacao = new StringBuilder();
             for (int i = 0; i < nivel; i++) {
                 indentacao.append("     ");
             }
             
+            // Se o nivel for igual a zero, quer dizer que está no root.
+            // Se não é um filho.
             String prefixo = (nivel == 0) ? "ROOT: " : "|-- ";
+            
+            // Escreve o noAtual, juntando a indentação, o prefixo e o nome da pessoa.
             System.out.println(indentacao.toString() + prefixo + noAtual.getCpf() + " (" + noAtual.getNomeCompleto() + ")");
             
+            // Escreve a parte de baixo (esquerda).
             visualizarRecursivo(noAtual.esquerda, nivel + 1);
-        }
-        
-        
-        public NoPessoa buscar(String cpfAlvo) {
-            return buscarRecursivo(this.raiz, cpfAlvo);
-        }
-        
-        
-        private NoPessoa buscarRecursivo(NoPessoa noAtual, String cpfAlvo) {
-            if (noAtual == null) {
-                return null;
-            }
-            
-            int comparacao = cpfAlvo.compareTo(noAtual.getCpf());
-            
-            if (comparacao == 0) {
-                return noAtual;
-            } else if (comparacao < 0) {
-                return buscarRecursivo(noAtual.esquerda, cpfAlvo);
-            } else {
-                return buscarRecursivo(noAtual.direita, cpfAlvo);
-            }
         }
         
         
@@ -447,6 +458,39 @@ public class Trabalho_arvore {
                 percorrerPosOrdem(noAtual.esquerda);
                 percorrerPosOrdem(noAtual.direita);
                 System.out.println(noAtual);
+            }
+        }
+        
+        // Pronto.
+        // Buscar pessoa por cpf.
+        public NoPessoa buscarSimples(String cpfAlvo) {
+            return buscarSimplesRecursivo(this.raiz, cpfAlvo);
+        }
+        
+        
+        // Pronto.
+        private NoPessoa buscarSimplesRecursivo(NoPessoa noAtual, String cpfAlvo) {
+            // Se o no atual for nulo, retorn nulo.
+            if (noAtual == null) {
+                return null;
+            }
+            
+            // Compara o cpf alvo o no atual.
+            int comparacao = cpfAlvo.compareTo(noAtual.getCpf());
+            
+            // Se for zero, o cpf alvo foi encontrado no No atual.
+            if (comparacao == 0) {
+                return noAtual;
+            } 
+            // Se a comparacao for menor que zero, o cpf alvo é menor que o cpf atual.
+            // A busca continua na subarvore esquerda.
+            else if (comparacao < 0) {
+                return buscarSimplesRecursivo(noAtual.esquerda, cpfAlvo);
+            } 
+            // Se a comparacao for maior que zero, o cpf alvo é maior que o cpf atual.
+            // A busca continua na subarvore direita.
+            else {
+                return buscarSimplesRecursivo(noAtual.direita, cpfAlvo);
             }
         }
         
