@@ -22,16 +22,13 @@ public class Trabalho_arvore {
         // Criando a arvore binaria com as funcionalidades de inserir, exclusão e busca.
         ArvorePessoas arvore = new ArvorePessoas();
         boolean rodando = true; // Usado para continuar ou parar o código.
-        int opcao; // Opção do usuário.
-        // Iniciando o DataInputStream. Usado para fazer perguntas.
-        DataInputStream dado;
-        dado = new DataInputStream(System.in);
+        int opcao; // Opção do usuário.;
         
-        //arvore.inserir(new NoPessoa("555", "Ana", "Silva", "10/02/1990", 1.70, "Solteira", 0));
-        //arvore.inserir(new NoPessoa("888", "Bruno", "Souza", "09/01/1985", 1.80, "Casado", 2));
-        //arvore.inserir(new NoPessoa("111", "Carlos", "Lima", "05/07/2000", 1.75, "Solteiro", 0));
-        //arvore.inserir(new NoPessoa("222", "Carlos", "Lima", "05/07/2000", 1.75, "Solteiro", 0));
-        //arvore.inserir(new NoPessoa("121", "Carlos", "Lima", "05/07/2000", 1.75, "Solteiro", 0));
+        //arvore.inserir(new NoPessoa("55555555555", "Ana", "Silva", "10/02/1990", 1.70, "Solteira", 0));
+        //arvore.inserir(new NoPessoa("88888888888", "Bruno", "Souza", "09/01/1985", 1.80, "Casado", 2));
+        //arvore.inserir(new NoPessoa("11111111111", "Carlos", "Lima", "05/07/2000", 1.75, "Solteiro", 0));
+        //arvore.inserir(new NoPessoa("22222222222", "Carlos", "Lima", "05/07/2000", 1.75, "Solteiro", 0));
+        //arvore.inserir(new NoPessoa("33333333333", "Carlos", "Lima", "05/07/2000", 1.75, "Solteiro", 0));
         
         
         while (rodando) {
@@ -45,19 +42,16 @@ public class Trabalho_arvore {
             System.out.println("3 - Buscar pessoa por CPF");
             System.out.println("4 - Executar percursos (Em ordem, pos-ordem e pre-ordem)");
             System.out.println("5 - Calcular altura da arvore");
-            System.out.println("6 - Sair");
-            Linha();
-            
-            
-            // arvore.visualizarArvore();
+            System.out.println("6 - Calcular profundidade da arvore");
+            System.out.println("7 - Sair");
             
             // Escolha do usuário.
-            opcao = PegaNum("-> ", 1, 6, "Escolha um opcao valida.");
+            opcao = PegaNum("-> ", 1, 7, "Escolha um opcao valida.");
             
             // Se a arvore não possuir raiz, não deixa o usuário fazer remoção ou buscas.
             if (opcao != 1 && opcao != 6 && arvore.isVazia()) {
                 Linha();
-                System.out.println("Arvore nao possui raiz. Escolha a opcao '1'.");
+                System.out.println("ARVORE NAO POSSUI RAIZ. ESCOLHA A OPCAO '1'.");
                 continue;
             }
             
@@ -67,9 +61,11 @@ public class Trabalho_arvore {
                     NoPessoa NovoNo = criarNovoNoPessoa();
                     // Se a pessoa for diferente de null, insere na arvore.
                     if (NovoNo != null) {
-                        arvore.inserir(NovoNo);
-                        Linha();
-                        System.out.println("PESSOA INSERIDA COM SUCESSO.");
+                        // Se for cadadastrado uma nova pessoa, informa que a pessao foi inserida com sucesso.
+                        if (arvore.inserir(NovoNo)) {
+                            Linha();
+                            System.out.println("PESSOA INSERIDA COM SUCESSO.");
+                        }
                     }
                 }
                 
@@ -83,15 +79,19 @@ public class Trabalho_arvore {
                     System.out.println("REMOCAO EXECUTADA");
                 }
                 
+                // Pronto.
                 case 3 -> { // Buscas.
                     int opcaoBusca; // Opção do usuário para buscas.
                     boolean buscando = true; // Usado para continuar ou parar o código.
                     
                     while(buscando) {
+                        arvore.visualizarArvore();
                         System.out.println("ESCOLHA UM TIPO DE BUSCA");
                         Linha();
-                        opcaoBusca = PegaNum("1 - Busca simples por CPF\n2 - Mostrar caminho da Raiz ate um NO\n3 - Mostrar caminho entre dois Nos\n4 - Encontrar ancestral comum\n5 - Voltar", 1, 5, "Digite uma opcao valida.");
+                        opcaoBusca = PegaNum("1 - Busca simples por CPF\n2 - Mostrar caminho da Raiz ate um NO\n3 - Mostrar caminho entre dois Nos\n4 - Encontrar ancestral comum\n5 - Voltar\n-> ", 1, 5, "Digite uma opcao valida.");
+                        Linha();
                         switch (opcaoBusca) {
+                            // Pronto.
                             case 1 -> { // Busca simples.
                                 String cpfBusca = PegaCpf("Digite um cpf para ser buscado: ");
                                 NoPessoa encontrado = arvore.buscarSimples(cpfBusca);
@@ -102,9 +102,61 @@ public class Trabalho_arvore {
                                     System.out.println("Pessoa com CPF " + cpfBusca + " nao encontrada.");
                                 }
                             }
-
+                            
+                            // Pronto.
                             case 2 -> { // Caminho raiz até nó.
+                                String cpfAlvo = PegaCpf("Digite o CPF do no alvo: ");
                                 
+                                List<String> caminho = arvore.encontrarCaminho(cpfAlvo);
+                                Linha();
+                                
+                                if (!caminho.isEmpty()) {
+                                    System.out.println("Caminho da raiz até o no: " + cpfAlvo + ": ");
+                                    System.out.println(caminho);
+                                } else {
+                                    System.out.println("CPF nao encontrado.");
+                                }
+                            }
+                            
+                            // Pronto.
+                            case 3 -> { // Caminho entre dois nós.
+                                String cpf1 = PegaCpf("Digite o primeiro CPF: ");
+                                String cpf2 = PegaCpf("Digite o segundo CPF: ");
+                                
+                                List<String> caminho = arvore.caminhoEntreDoisNos(cpf1, cpf2);
+                                Linha();
+                                
+                                if (!caminho.isEmpty()) {
+                                    System.out.println("Caminho entre os nos: " + cpf1 + ", " + cpf2 + ": ");
+                                    System.out.println(caminho);
+                                } else {
+                                    System.out.println("Um ou ambos CPFs nao encontrados.");
+                                }
+                            }
+                            
+                            // Pronto.
+                            case 4 -> {
+                                String cpf1 = PegaCpf("Digite o CPF do primeiro no: ");
+                                String cpf2 = PegaCpf("Digite o CPF do segundo no: ");
+                                
+                                NoPessoa ancestral = arvore.encontrarAncestral(cpf1, cpf2);
+                                Linha();
+                                
+                                if (ancestral != null) {
+                                    System.out.println("ANCESTRAL COMUM MAIS PROXIMO ENCONTRADO");
+                                    Linha();
+                                    System.out.println("Nos: " + cpf1 + " e " + cpf2);
+                                    System.out.println("Ancestral: " + ancestral.getCpf() + " (" + ancestral.getNomeCompleto() + ")");
+                                    
+                                } else {
+                                    System.out.println("Um ou ambos CPFs nao encontrados.");
+                                }
+                            }
+                            
+                            // Pronto.
+                            case 5 -> {
+                                buscando = false;
+                                System.out.println("SAINDO DO SISTEMA...");
                             }
                         }
                     }
@@ -117,12 +169,33 @@ public class Trabalho_arvore {
                     arvore.percorrer(PegaNum("1 - Em ordem\n2 - Pós-ordem\n3 - Pré-ordem\n-> ", 1, 3, "Digite uma opcao valida."));
                 }
                 
+                // Pronto.
                 case 5 -> { // Altura da arvore.
-                    System.out.println("A altura da arvore e: " + arvore.calcularAltura());
+                    int altura = arvore.calcularAltura();
+                    Linha();
+                    if (altura != -1) {
+                        System.out.println("A altura da arvore e: " + arvore.calcularAltura());
+                    } else {
+                        System.out.println("A arvore esta vazia.");
+                    }
+                    
                 }
                 
                 // Pronto.
-                case 6 -> { // Encerra o sistema.
+                case 6 -> { // Profundidade da arvore.
+                    arvore.visualizarArvore();
+                    String cpfAlvo = PegaCpf("Digite o CPF para medir a profundidade: ");
+                    int profundidade = arvore.calcularProfundidade(cpfAlvo);
+                    Linha();
+                    if (profundidade >= 0) {
+                        System.out.println("Profundidade do '" + cpfAlvo + "': " + profundidade);
+                    } else {
+                        System.out.println("CPF nao encontrado.");
+                    }
+                }
+                
+                // Pronto.
+                case 7 -> { // Encerra o sistema.
                     rodando = false;
                     Linha();
                     System.out.println("SAINDO DO SISTEMA...");
@@ -235,9 +308,10 @@ public class Trabalho_arvore {
             this.filhos = dadosSucessor.filhos;
        }
        
+        
        @Override
        public String toString() {
-           return String.format("| CPF: %s | Nome: %s %s | Altura: %.2fm |", cpf, nome, sobrenome, altura);
+           return String.format("| CPF: %s | Nome: %s %s | Altura: %.2fm | Estado Civil: %s | Filhos: %d", cpf, nome, sobrenome, altura, estadoCivil, filhos);
        }
     }
     
@@ -262,9 +336,18 @@ public class Trabalho_arvore {
         
         // Pronto.
         // Metodo para inserir a pessoa na arvore.
-        public void inserir(NoPessoa novaPessoa) {
+        public boolean inserir(NoPessoa novaPessoa) {
+            String cpfNovo = novaPessoa.getCpf();
+            
+            // Se o cpf já estiver cadastrado na arvore informa uma mensagem de erro.
+            if (buscarSimples(cpfNovo) != null) {
+                Linha();
+                System.out.println("CPF JA EXISTE NA ARVORE");
+                return false;
+            }
             // Passa a raiz para ser feita a comparação com novaPessoa. Fazendo com que seja inserido na ordem correta.
             this.raiz = inserirRecursivo(this.raiz, novaPessoa);
+            return true;
         }
         
         
@@ -279,18 +362,19 @@ public class Trabalho_arvore {
             // Faz a comparação para decidir se vai direita ou esquerda.
             int comparacao = novaPessoa.getCpf().compareTo(noAtual.getCpf());
             
+            
             if (comparacao < 0) { // Se comparacao for menor que zero, quer dizer que o cpf é menor que o cpf da raiz de comparação.
                 noAtual.esquerda = inserirRecursivo(noAtual.esquerda, novaPessoa); // A pessoa é inserida a esquerda.
             } else if (comparacao > 0) { // Se for maior que zero, quer dizer que o cpf é maior que o cpf da raiz de comparação.
                 noAtual.direita = inserirRecursivo(noAtual.direita, novaPessoa); // A pessoa é inserida a direita.
-            } else { // Se o cpf for o mesmo, retorna um erro.
-                throw new IllegalArgumentException("ERRO: CPF " + novaPessoa.getCpf() + " já existe na árvore.");
             }
             
             return noAtual;
         }
         
         
+        // Pronto.
+        // Remover no.
         public void remover(String cpfAlvo) {
             this.raiz = removerRecursivo(this.raiz, cpfAlvo);
         }
@@ -358,8 +442,9 @@ public class Trabalho_arvore {
         // Pronto.
         // Visualizar arvore binaria completa.
         public void visualizarArvore() {
+            LinhaFrufru();
             System.out.println("VISUALIZACAO COMPLETA DA ARVORE");
-            Linha();
+            LinhaFrufru();
            
             // Chama a função para visualizar a arvore completa, começando pela raiz e nivel 0.
             visualizarRecursivo(this.raiz, 0);
@@ -422,7 +507,6 @@ public class Trabalho_arvore {
                 default ->
                     System.out.println("Opcao invalida.");
             }
-            Linha();
         }
         
         
@@ -495,122 +579,180 @@ public class Trabalho_arvore {
         }
         
         
+        // Pronto.
+        // Encontra caminho
+        public List<String> encontrarCaminho(String cpfAlvo) {
+            // Lista que armezenará o caminho.
+            List<String> caminho = new ArrayList<>();
+            
+            // Chama o metodo, começa pela raiz da arvore.
+            encontrarCaminhoRecursivo(this.raiz, cpfAlvo, caminho);
+            
+            // Retorna a lista contendo o caminho.
+            return caminho;
+        }
+        
+        
+        // Pronto.
+        private boolean encontrarCaminhoRecursivo(NoPessoa noAtual, String cpfAlvo, List<String> caminho) {
+            // Se o noAtual for nulo, não encontrou o no.
+            if (noAtual == null) {
+                return false;
+            }
+            
+            // Adiciona o cpf do no atual ao caminho.
+            caminho.add(noAtual.getCpf());
+            
+            // Se o cpf do no atual for igual ao cpfAlvo, Retorna true.
+            // Para a execução.
+            if (noAtual.getCpf().equals(cpfAlvo)) {
+                return true;
+            }
+            
+            // Tenta encontrar o cpfAlvo na subarvore esquerda ou direita, retorna true.
+            // Para a execução.
+            if (encontrarCaminhoRecursivo(noAtual.esquerda, cpfAlvo, caminho) || encontrarCaminhoRecursivo(noAtual.direita, cpfAlvo, caminho)) {
+                return true;
+            }
+            
+            // Retorna false caso o caminho estiver vazio.
+            caminho.remove(caminho.size() - 1);
+            return false;
+        }
+        
+        // Pronto.
+        // Encontra no ancestral.
+        public NoPessoa encontrarAncestral(String cpf1, String cpf2) {
+            // Chama o metodo, começando pela raiz.
+            return encontrarAncestralRecursivo(this.raiz, cpf1, cpf2);
+        }
+        
+        
+        // Pronto.
+        private NoPessoa encontrarAncestralRecursivo(NoPessoa noAtual, String cpf1, String cpf2) {
+            // Se o noAtual for nulo, retorna null.
+            if (noAtual == null) {
+                return null;
+            }
+            // Compara os cpf com o noAtual.
+            int comp1 = cpf1.compareTo(noAtual.getCpf());
+            int comp2 = cpf2.compareTo(noAtual.getCpf());
+            
+            // Se ambos os CPFs forem maiores que o no atual, o ancestral deve estar na subarvore direita.
+            if (comp1 > 0 && comp2 > 0) {
+                return encontrarAncestralRecursivo(noAtual.direita, cpf1, cpf2);
+            }
+            
+            // Se ambos os CPFs forem menores que o no atual, o ancestral deve estar na subarvore esquerda.
+            if (comp1 < 0 && comp2 < 0) {
+                return encontrarAncestralRecursivo(noAtual.esquerda, cpf1, cpf2);
+            }
+            
+            // Se nenhuma condição for atendidade, o noAtual é o ancestral.
+            return noAtual;
+        }
+        
+        
+        // Pronto.
+        // Encontra o caminho entre dois nos distintos.
+        public List<String> caminhoEntreDoisNos(String cpf1, String cpf2) {
+            // Encontra o ancestral comum mais próximo.
+            NoPessoa ancestral = encontrarAncestral(cpf1, cpf2);
+            
+            // Se não existir ancestral comum, retorna uma lista vazia.
+            if (ancestral == null) {
+                return new ArrayList<>();
+            }
+            
+            // Guarda o caminho do primeiro cpf.
+            List<String> caminho1 = encontrarCaminho(cpf1);
+            // Guarda o caminho do segundo cpf.
+            List<String> caminho2 = encontrarCaminho(cpf2);
+            
+            // Lista que contera o caminho inteiro.
+            List<String> caminhoFinal = new ArrayList<>();
+            
+            // Indices dos caminhos.
+            int indexAncestral1 = caminho1.indexOf(ancestral.getCpf());
+            int indexAncestral2 = caminho2.indexOf(ancestral.getCpf());
+            
+            // Primeiro caminho. Subido de cpf1 até o ancestral.
+            // Começa em cpf1, que é o último indice e vai até o ancestral.
+            // Adiciona em ordem inversa. Simulando a subida da arvore.
+            for (int i = caminho1.size() -1; i >= indexAncestral1; i--) {
+                caminhoFinal.add(caminho1.get(i));
+            }
+            
+            // Segundo caminho. Descida do ancestral até o cpf2.
+            // Começa depois do ancestral, para evitar duplicidade, e vai até o cpf2.
+            for (int i = indexAncestral2 + 1; i < caminho2.size(); i++) {
+                caminhoFinal.add(caminho2.get(i));
+            }
+            
+            // Retorna o caminho final.
+            return caminhoFinal;
+        }       
+        
+        
+        // Pronto.
+        // Calcula a altura da arvore.
         public int calcularAltura() {
             return calcularAlturaRecursivo(this.raiz);
         }
         
         
+        // Pronto.
         private int calcularAlturaRecursivo(NoPessoa noAtual) {
+            // Se o no atual for nulo, chegou a um ramo vazio, a altura da subarvore é -1.
+            // Ex.: Caso a raiz não possua subarvore, retorna -1 para direita e esquerda. 
+            // Ocasiando em Math.max(-1, -1) + 1 = 0.
             if (noAtual == null) {
                 return -1;
             }
             
+            // Calcula a altura da subarvore esquerda.
             int alturaEsquerda = calcularAlturaRecursivo(noAtual.esquerda);
+            // Calcula a altura da subarvore direita.
             int alturaDireita = calcularAlturaRecursivo(noAtual.direita);
             
+            // A altura é o maior valor.
             return Math.max(alturaEsquerda, alturaDireita) + 1;
         }
         
         
+        // Pronto.
+        // Calcula a profundidade da arvore.
         public int calcularProfundidade(String cpfAlvo) {
             return calcularProfundidadeRecursivo(this.raiz, cpfAlvo, 0);
         }
         
         
+        // Pronto.
         private int calcularProfundidadeRecursivo(NoPessoa noAtual, String cpfAlvo, int profundidadeAtual) {
+            // No não existe.
             if (noAtual == null) {
                 return -1;
             }
             
+            // Compara o cpfAlvo com o cpf do noAtual.
+            // Faz a navegação por toda a arvore.
             int comparacao = cpfAlvo.compareTo(noAtual.getCpf());
             
+            // cpfAlvo foi encontrado, retorna a profundidade atual.
             if (comparacao == 0) {
                 return profundidadeAtual;
-            } else if (comparacao < 0) {
+            } 
+            // Se a comparacao for menor que zero, indica que o cpfAlvo está na esquerda.
+            // Chama a função novamente e acrescenta +1 a profundidade.
+            else if (comparacao < 0) {
                 return calcularProfundidadeRecursivo(noAtual.esquerda, cpfAlvo, profundidadeAtual + 1);
-            } else {
+            } 
+            // Se a comparacao for maior que zero, indica que o cpfAlvo está na direita.
+            // Chama a função novamente e acrescente + 1 a profundidade.
+            else {
                 return calcularProfundidadeRecursivo(noAtual.direita, cpfAlvo, profundidadeAtual + 1);
             }    
-        }
-        
-        
-        public List<String> encontrarCaminho(String cpfAlvo) {
-            List<String> caminho = new ArrayList<>();
-            
-            encontrarCaminhoRecursivo(this.raiz, cpfAlvo, caminho);
-            return caminho;
-        }
-        
-        
-        private boolean encontrarCaminhoRecursivo(NoPessoa noAtual, String cpfAlvo, List<String> caminho) {
-            if (noAtual == null) {
-                return false;
-            }
-            
-            caminho.add(noAtual.getCpf());
-            
-            if (noAtual.getCpf().equals(cpfAlvo)) {
-                return true;
-            }
-            
-            if (encontrarCaminhoRecursivo(noAtual.esquerda, cpfAlvo, caminho) || encontrarCaminhoRecursivo(noAtual.direita, cpfAlvo, caminho)) {
-                return true;
-            }
-            
-            caminho.remove(caminho.size() - 1);
-            return false;
-        }
-        
-        
-        public NoPessoa encontrarAncestral(String cpf1, String cpf2) {
-            return encontrarAncestralRecursivo(this.raiz, cpf1, cpf2);
-        }
-        
-        
-        private NoPessoa encontrarAncestralRecursivo(NoPessoa noAtual, String cpf1, String cpf2) {
-            if (noAtual == null) {
-                return null;
-            }
-            
-            int comp1 = cpf1.compareTo(noAtual.getCpf());
-            int comp2 = cpf2.compareTo(noAtual.getCpf());
-            
-            if (comp1 > 0 && comp2 > 0) {
-                return encontrarAncestralRecursivo(noAtual.direita, cpf1, cpf2);
-            }
-            
-            if (comp1 < 0 && comp2 < 0) {
-                return encontrarAncestralRecursivo(noAtual.esquerda, cpf1, cpf2);
-            }
-            
-            return noAtual;
-        }
-        
-        
-        public List<String> caminhoEntreDoisNos(String cpf1, String cpf2) {
-            NoPessoa ancestral = encontrarAncestral(cpf1, cpf2);
-            
-            if (ancestral == null) {
-                return new ArrayList<>();
-            }
-            
-            List<String> caminho1 = encontrarCaminho(cpf1);
-            List<String> caminho2 = encontrarCaminho(cpf2);
-            
-            List<String> caminhoFinal = new ArrayList<>();
-            int indexAncestral1 = caminho1.indexOf(ancestral.getCpf());
-            int indexAncestral2 = caminho2.indexOf(ancestral.getCpf());
-            
-            for (int i = caminho1.size() -1; i >= indexAncestral1; i--) {
-                caminhoFinal.add(caminho1.get(i));
-            }
-            
-            for (int i = caminho2.size() + 1; i < indexAncestral2; i++) {
-                caminhoFinal.add(caminho2.get(i));
-            }
-            
-            return caminhoFinal;
-        }         
+        }  
     }
     
     
@@ -746,5 +888,11 @@ public class Trabalho_arvore {
     // Escreve uma linha para separação.
     public static void Linha() {
         System.out.println("----------------------------------------");
+    }
+    
+    
+    // Escreve uma linha para separação.
+    public static void LinhaFrufru() {
+        System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
     }
 }
